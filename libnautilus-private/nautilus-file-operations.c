@@ -104,6 +104,7 @@ typedef struct {
 	GList *files;
 	gboolean try_trash;
 	gboolean user_cancel;
+	guint n_items;
 	NautilusDeleteCallback done_callback;
 	gpointer done_callback_data;
 } DeleteJob;
@@ -1905,12 +1906,11 @@ delete_job_done (gpointer user_data)
 
 	if (job->done_callback) {
 		debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
-		job->done_callback (debuting_uris, job->user_cancel, job->done_callback_data);
+                job->done_callback (debuting_uris, job->user_cancel, job->n_items, job->done_callback_data);
 		g_hash_table_unref (debuting_uris);
 	}
-	
-	finalize_common ((CommonJob *)job);
 
+	finalize_common ((CommonJob *)job);
 	nautilus_file_changes_consume_changes (TRUE);
 
 	return FALSE;
@@ -2015,6 +2015,7 @@ trash_or_delete_internal (GList                  *files,
 	job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
 	job->try_trash = try_trash;
 	job->user_cancel = FALSE;
+	job->n_items = g_list_length (files);
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 

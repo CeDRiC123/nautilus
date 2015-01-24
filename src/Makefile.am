@@ -13,6 +13,7 @@ libexec_PROGRAMS=				\
 AM_CPPFLAGS =							\
 	-I$(top_srcdir) 					\
 	-I$(top_builddir)/libnautilus-private 			\
+	-I$(top_srcdir)/libgd                                   \
 	$(BASE_CFLAGS) 						\
 	$(COMMON_CFLAGS)					\
 	$(NAUTILUS_CFLAGS)					\
@@ -30,6 +31,7 @@ AM_CPPFLAGS =							\
 
 LDADD =\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
+	$(top_builddir)/libgd/libgd.la \
 	$(BASE_LIBS) \
 	$(COMMON_LIBS) \
 	$(NAUTILUS_LIBS) \
@@ -176,6 +178,10 @@ nautilus_SOURCES = \
 	nautilus-list-view.h 			\
 	nautilus-location-entry.c               \
 	nautilus-location-entry.h               \
+	nautilus-notification-delete.c          \
+	nautilus-notification-delete.h          \
+	nautilus-notification-manager.c         \
+	nautilus-notification-manager.h         \
 	nautilus-main.c 			\
 	nautilus-mime-actions.c 		\
 	nautilus-mime-actions.h 		\

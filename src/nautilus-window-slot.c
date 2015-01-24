@@ -33,6 +33,8 @@
 #include "nautilus-trash-bar.h"
 #include "nautilus-window-private.h"
 #include "nautilus-x-content-bar.h"
+#include "nautilus-notification-manager.h"
+#include "nautilus-notification-delete.h"
 
 #include <glib/gi18n.h>
 #include <eel/eel-stock-dialogs.h>
@@ -67,6 +69,9 @@ struct NautilusWindowSlotDetails {
 	guint loading_timeout_id;
 	GtkWidget *floating_bar;
 	GtkWidget *view_overlay;
+
+	/* Notifications */
+	NautilusNotificationManager *notification_manager;
 
 	/* slot contains
 	 *  1) an vbox containing extra_location_widgets
@@ -592,6 +597,9 @@ nautilus_window_slot_constructed (GObject *object)
 	gtk_box_pack_start (GTK_BOX (slot), slot->details->view_overlay, TRUE, TRUE, 0);
 	gtk_widget_show (slot->details->view_overlay);
 
+	slot->details->notification_manager = nautilus_notification_manager_new ();
+	gtk_overlay_add_overlay (GTK_OVERLAY (slot->details->view_overlay),
+	                         GTK_WIDGET (slot->details->notification_manager));
 	slot->details->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
 	gtk_widget_set_halign (slot->details->floating_bar, GTK_ALIGN_END);
 	gtk_widget_set_valign (slot->details->floating_bar, GTK_ALIGN_END);
@@ -2399,6 +2407,19 @@ location_has_really_changed (NautilusWindowSlot *slot)
 
 		g_object_unref (location);
 	}
+}
+
+void
+nautilus_window_slot_add_notification_delete (NautilusWindowSlot *slot,
+                                              guint               n_items)
+{
+	NautilusNotificationDelete *notification;
+
+	notification = nautilus_notification_delete_new (nautilus_window_slot_get_window (slot),
+	                                                 n_items);
+	nautilus_notification_manager_add_notification (slot->details->notification_manager,
+	                                                GTK_WIDGET (notification));
+	//g_object_unref (notification);
 }
 
 static void

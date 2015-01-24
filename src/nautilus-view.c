@@ -3573,10 +3573,14 @@ desktop_or_home_dir_in_selection (GList *selection)
 static void
 trash_or_delete_done_cb (GHashTable *debuting_uris,
 			 gboolean user_cancel,
+                         guint n_items,
 			 NautilusView *view)
 {
 	if (user_cancel) {
 		view->details->selection_was_removed = FALSE;
+	} else {
+		nautilus_window_slot_add_notification_delete (view->details->slot,
+		                                              n_items);
 	}
 }
 

@@ -38,6 +38,7 @@ typedef void (* NautilusOpCallback)        (gboolean    success,
 					    gpointer    callback_data);
 typedef void (* NautilusDeleteCallback)    (GHashTable *debuting_uris,
 					    gboolean    user_cancel,
+                                            guint       n_items,
 					    gpointer    callback_data);
 typedef void (* NautilusMountCallback)     (GVolume    *volume,
 					    gboolean    success,
